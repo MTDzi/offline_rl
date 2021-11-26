@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+import pickle
 
 import numpy as np
 import torch
@@ -32,7 +33,7 @@ PENALTY_SIGMA = 0.3
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser = argparse.ArgumentParser()
     parser.add_argument('-nt', '--num-steps-traj', default=150,
                         help='Number of trajectory steps predicted by the model')
     parser.add_argument('-na', '--num-steps-act', default=10,
@@ -59,6 +60,9 @@ if __name__ == '__main__':
                         help='A parameter determining the number of neurons in all the layers')
     parser.add_argument('-pd', '--plots-directory', default='./plots',
                         help='Directory to which all plots are going to be saved to')
+    parser.add_argument('-o', '--output-filename', default='grad_driver.pkl',
+                        help='Name of the .pkl file with the GradDriver containing a trained model that can be used'
+                             ' for driving the car in the f1tenth_gym environment')
     
     
     args = parser.parse_args()
@@ -277,3 +281,6 @@ if __name__ == '__main__':
 
         device='cpu',
     )
+
+    with open(args.output_filename, 'wb') as out:
+        pickle.dump(grad_driver, out)
